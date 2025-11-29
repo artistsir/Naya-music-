@@ -684,7 +684,8 @@ class YouTube:
         return None
 
     async def playlist(self, limit: int, user: str, url: str, video: bool) -> list[Track | None]:
-    tracks = []
+    # Playlist support temporarily disabled
+    return []
     try:
         plist = Playlist.getVideos(url)
         for data in plist["videos"][:limit]:
