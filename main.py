@@ -30,7 +30,7 @@ from ntgcalls import ConnectionNotFound, TelegramServerError
 from pytgcalls import PyTgCalls, exceptions
 from pytgcalls.types import MediaStream, AudioQuality, VideoQuality, GroupCallConfig, Update, StreamEnded, ChatUpdate
 from pymongo import AsyncMongoClient
-from youtubesearchpython import VideosSearch, Playlist
+from youtube_search import YoutubeSearch
 from PIL import Image, ImageDraw, ImageEnhance, ImageFilter, ImageFont, ImageOps
 
 load_dotenv()
