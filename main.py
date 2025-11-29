@@ -28,7 +28,19 @@ from pyrogram import Client, filters, enums, types, idle
 from pyrogram.errors import ChatAdminRequired, UserNotParticipant, FloodWait, MessageIdInvalid
 from ntgcalls import ConnectionNotFound, TelegramServerError
 from pytgcalls import PyTgCalls, exceptions
-from pytgcalls.types import MediaStream, AudioQuality, VideoQuality, GroupCallConfig, Update, StreamEnded, ChatUpdate
+from pytgcalls.types import (
+    InputAudioStream, 
+    InputVideoStream, 
+    AudioQuality, 
+    VideoQuality,
+    AudioParameters,
+    VideoParameters,
+    MediaStream,
+    StreamAudioEnded,
+    StreamVideoEnded,
+    Update,
+    GroupCallConfig
+)
 from pymongo import AsyncMongoClient
 from youtube_search import YoutubeSearch
 from PIL import Image, ImageDraw, ImageEnhance, ImageFilter, ImageFont, ImageOps
@@ -881,14 +893,21 @@ class TgCall(PyTgCalls):
         if not media.file_path:
             return await message.edit_text(f"File not found. Please contact {config.SUPPORT_CHAT}")
 
-        stream = MediaStream(
-            media_path=media.file_path,
-            audio_parameters=AudioQuality.HIGH,
-            video_parameters=VideoQuality.HD_720p,
-            audio_flags=MediaStream.Flags.REQUIRED,
-            video_flags=MediaStream.Flags.AUTO_DETECT if media.video else MediaStream.Flags.IGNORE,
-            ffmpeg_parameters=f"-ss {seek_time}" if seek_time > 1 else None,
-        )
+        if media.video:
+    stream = MediaStream(
+        media_path=media.file_path,
+        audio_parameters=AudioQuality.HIGH,
+        video_parameters=VideoQuality.HD_720p,
+        ffmpeg_parameters=f"-ss {seek_time}" if seek_time > 1 else None,
+    )
+else:
+    stream = MediaStream(
+        media_path=media.file_path,
+        audio_parameters=AudioQuality.HIGH,
+        video_parameters=VideoQuality.HD_720p,
+        no_video=True,
+        ffmpeg_parameters=f"-ss {seek_time}" if seek_time > 1 else None,
+    )
         try:
             await client.play(chat_id=chat_id, stream=stream, config=GroupCallConfig(auto_start=False))
             if not seek_time:
