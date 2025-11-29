@@ -893,22 +893,21 @@ class TgCall(PyTgCalls):
         if not media.file_path:
             return await message.edit_text(f"File not found. Please contact {config.SUPPORT_CHAT}")
 
-        if media.video:
-            if media.video:
-            stream = MediaStream(
-                media_path=media.file_path,
-                audio_parameters=AudioQuality.HIGH,
-                video_parameters=VideoQuality.HD_720p,
-                ffmpeg_parameters=f"-ss {seek_time}" if seek_time > 1 else None,
-            )
-        else:
-            stream = MediaStream(
-                media_path=media.file_path,
-                audio_parameters=AudioQuality.HIGH,
-                video_parameters=VideoQuality.HD_720p,
-                no_video=True,
-                ffmpeg_parameters=f"-ss {seek_time}" if seek_time > 1 else None,
-            )
+                    if media.video:
+                stream = MediaStream(
+                    media_path=media.file_path,
+                    audio_parameters=AudioQuality.HIGH,
+                    video_parameters=VideoQuality.HD_720p,
+                    ffmpeg_parameters=f"-ss {seek_time}" if seek_time > 1 else None,
+                )
+            else:
+                stream = MediaStream(
+                    media_path=media.file_path,
+                    audio_parameters=AudioQuality.HIGH,
+                    video_parameters=VideoQuality.HD_720p,
+                    no_video=True,
+                    ffmpeg_parameters=f"-ss {seek_time}" if seek_time > 1 else None,
+                )
         try:
             await client.play(chat_id=chat_id, stream=stream, config=GroupCallConfig(auto_start=False))
             if not seek_time:
