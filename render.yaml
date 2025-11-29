@@ -1,0 +1,25 @@
+services:
+  - type: web
+    name: anonxmusic
+    env: docker
+    plan: free
+    dockerfilePath: ./Dockerfile
+    envVars:
+      - key: API_ID
+        value: your_api_id_here
+      - key: API_HASH  
+        value: your_api_hash_here
+      - key: BOT_TOKEN
+        value: your_bot_token_here
+      - key: MONGO_URL
+        value: your_mongodb_url_here
+      - key: LOGGER_ID
+        value: your_logger_chat_id_here
+      - key: OWNER_ID
+        value: your_owner_id_here
+      - key: SESSION1
+        value: your_session_string_1_here
+      - key: SESSION2
+        value: your_session_string_2_here
+      - key: SESSION3
+        value: your_session_string_3_here
