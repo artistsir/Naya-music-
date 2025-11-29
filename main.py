@@ -30,7 +30,7 @@ from ntgcalls import ConnectionNotFound, TelegramServerError
 from pytgcalls import PyTgCalls, exceptions
 from pytgcalls.types import MediaStream, AudioQuality, VideoQuality, GroupCallConfig, Update, StreamEnded, ChatUpdate
 from pymongo import AsyncMongoClient
-from py_yt import VideosSearch, Playlist
+from youtubesearchpython import VideosSearch, Playlist
 from PIL import Image, ImageDraw, ImageEnhance, ImageFilter, ImageFont, ImageOps
 
 load_dotenv()
@@ -683,24 +683,27 @@ class YouTube:
             return link.split("&si")[0].split("?si")[0]
         return None
 
-    async def search(self, query: str, m_id: int, video: bool = False) -> Track | None:
-        _search = VideosSearch(query, limit=1)
-        results = await _search.next()
-        if results and results["result"]:
-            data = results["result"][0]
-            return Track(
+    async def playlist(self, limit: int, user: str, url: str, video: bool) -> list[Track | None]:
+    tracks = []
+    try:
+        plist = Playlist.getVideos(url)
+        for data in plist["videos"][:limit]:
+            track = Track(
                 id=data.get("id"),
-                channel_name=data.get("channel", {}).get("name", "Unknown"),
+                channel_name=data.get("channel", {}).get("name", ""),
                 duration=data.get("duration", "0:00"),
                 duration_sec=utils.to_seconds(data.get("duration", "0:00")),
-                message_id=m_id,
                 title=data.get("title", "Unknown")[:25],
                 thumbnail=data.get("thumbnails", [{}])[-1].get("url", "").split("?")[0],
-                url=data.get("link", ""),
-                view_count=data.get("viewCount", {}).get("short", "N/A"),
+                url=data.get("link", "").split("&list=")[0],
+                user=user,
+                view_count="",
                 video=video,
             )
-        return None
+            tracks.append(track)
+    except:
+        pass
+    return tracks
 
     async def playlist(self, limit: int, user: str, url: str, video: bool) -> list[Track | None]:
         tracks = []
